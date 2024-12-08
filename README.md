@@ -1,2 +1,12 @@
 # AdventofCode
 My solutions to the [Advent of Code](https://adventofcode.com) programming contest run by Eric Wastl
+
+
+Day 1 $~~~~~~$ [part 1](2024/1pt1.py) | [part 2](2024/1pt2.py) <br />    
+Day 2 $~~~~~~$ [part 1](2024/2pt1.py) | [part 2](2024/2pt2.py) <br />    
+Day 3 $~~~~~~$ [part 1](2024/3pt1.py) | [part 2](2024/3pt2.py) <br />    
+Day 4 $~~~~~~$ [part 1](2024/4pt1.py) | [part 2](2024/4pt2.py) <br />    
+Day 5 $~~~~~~$ [part 1](2024/5pt1.py) | [part 2](2024/5pt2.py) <br />    
+Day 6 $~~~~~~$ [part 1](2024/6pt1.py) | [part 2](2024/6pt2.py) <br />    
+Day 7 $~~~~~~$ [part 1](2024/7pt1.py) | [part 2](2024/7pt2.py) <br />    
+Day 8 $~~~~~~$ [part 1](2024/8pt1.py) | [part 2](2024/8pt2.py) <br />
