@@ -44,4 +44,3 @@ while True:
     if cur_dir == 4:
         cur_dir = 0
 print(len(x_list) + 1) #+1 for starting spot
-grid[start[0]][start[1]] = "^"
