@@ -44,7 +44,7 @@ for element in list(reversed(file_groups.keys())):
     use_function = False
     for empty_size in empty_groups.keys():
         if location + 1 in empty_groups[empty_size]:
-            empty_groups[empty_size].remove(location+1) #this test input contains a failure on this function, when element 5 moves
+            empty_groups[empty_size].remove(location+1)
             new_loc_list.append(empty_size)
             use_function = True
         if location - 1 in empty_groups[empty_size]:
@@ -67,12 +67,12 @@ for element in list(reversed(file_groups.keys())):
         empty_groups[size].append(location)
     else:
         empty_groups[new_size].append(new_location+1)
-
+    #end of case 1
     if remainder == 0: pass 
     else:
         #check case 2: more empty to right of leftmost new empty
         #only check if remainder isn't zero
-        for element in file_groups.keys(): #id expansion for files. Add right location adjust
+        for element in file_groups.keys(): #id expansion for files.
             if file_groups[element][0] > leftmost:
                 file_groups[element][0] += 1
             if file_groups[element][0] > location - loc_adjust:
@@ -85,15 +85,15 @@ for element in list(reversed(file_groups.keys())):
         for empty_size in empty_groups.keys(): 
             if leftmost+1 in empty_groups[empty_size]:
                 empty_groups[empty_size].remove(leftmost+1)
-                if empty_size + remainder not in empty_groups.keys():  #this not running sometimes can cause issues
+                if empty_size + remainder not in empty_groups.keys():
                     empty_groups[empty_size + remainder] = []
                 empty_groups[empty_size + remainder].append(leftmost+1)
                 applied = 1
                 break
-        
+        #id expansion for empties
         if applied == 0:
             empty_groups[remainder].append(leftmost+1)
-            for empty_size in empty_groups.keys(): #id expansion for empties
+            for empty_size in empty_groups.keys():
                 for i in range(len(empty_groups[empty_size])):
                     if empty_groups[empty_size][i] > leftmost+1:
                         empty_groups[empty_size][i] += 1
@@ -124,6 +124,7 @@ for i, element in enumerate(ordered_files_empties):
     for j in range(element[2]):
         ordered_list.append(element[0])
 
+#create checksum
 checksum, count = 0,0
 for i,element in enumerate(ordered_list):
     if element == ".":
