@@ -1,5 +1,4 @@
 import re
-import numbers
 import math
 with open("main.in","r") as file:
     dataset = file.read()
@@ -8,23 +7,27 @@ with open("main.in","r") as file:
 #use like a div feature
 price = 0
 for group in groups:
-    ax,ay,bx,by,tx,ty = list(map(int,group))
-    tx += 10000000000000
-    ty += 10000000000000
+    a,c,b,d,e,f = list(map(int,group))
+    e += 10000000000000
+    f += 10000000000000
     #find a way to run this and divide it
-    
-    cur_x,cur_y = 0,0
-    r = 0
-    for i in range(1,1000000000000):
-        cur_x += ax
-        cur_y += ay
-        if (tx-cur_x) // bx == (ty-cur_y) // by:
-            test = (tx-cur_x) /bx + (ty-cur_y)/by
-            if not test.is_integer():
-                continue
-            r = (tx-cur_x)//bx
-            break
-    if r != 0:
-        price += r + i*3
+    #cramer's law. Sadly first one i had to use the internet for for ideas
+    x = (e*d - b*f) / (a*d - b*c)
+    y = (a*f - e*c) / (a*d - b*c)
+    a = x
+    b = y
+    r = a*3+b
+    if not r.is_integer():
+        continue
+    price += r
 
-print(price)
+print(int(price))
+# ax + bx = tx
+# ay + by = ty
+
+# aA + bB = e
+# cA + dB = f
+#
+#(xval1)A + (xval2)B = Tx
+#(yval1)A + (yval2)B = Ty
+#
