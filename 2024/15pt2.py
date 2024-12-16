@@ -65,55 +65,49 @@ movement = {
 }
 #recursive check to see if boxes can be moved, and then sends data back up chain to move them
 def pushx(test_y,test_x,xvector): #pushes for x_vector
-    global boxes, robot,update
+    global boxes, robot,instr_append
     check = 0
+    #work for next values
     if xvector == 1:
-        if [test_y,test_x] in walls: return False
+        if [test_y,test_x] in walls: 
+            instr_append = False
+            return False
         elif [[test_y,test_x],[test_y,test_x+xvector]] in boxes:
             
             check = pushx(test_y,test_x+(xvector*2),xvector)
-            if check:
-                update.append(f'update_x_1({xvector},{test_y},{test_x})')
+            if check and instr_append:
+                boxes[boxes.index([[test_y,test_x],[test_y,test_x+xvector]])] = [[test_y,test_x+xvector],[test_y,test_x+(2*xvector)]]
+                right_boxes[right_boxes.index([test_y,test_x+xvector])] = [test_y,test_x+(2*xvector)]
+                left_boxes[left_boxes.index([test_y,test_x])] = [test_y,test_x+xvector]
+                if [test_y,test_x+(2*xvector)] in empty:
+                    empty.remove([test_y,test_x+(2*xvector)])
+                    empty.append([test_y,test_x])
                 return True
             else:
                 return False
         else:
             return True
     else:
-        if [test_y,test_x] in walls: return False
+        if [test_y,test_x] in walls: 
+            instr_append = False
+            return False
         elif [[test_y,test_x+xvector],[test_y,test_x]] in boxes:
             
             check = pushx(test_y,test_x+(xvector*2),xvector)
-            if check:
-                update.append(f'update_x_2({xvector},{test_y},{test_x})')
+            if check and instr_append:
+                boxes[boxes.index([[test_y,test_x+xvector],[test_y,test_x]])] = [[test_y,test_x+(2*xvector)],[test_y,test_x+xvector]]
+                left_boxes[left_boxes.index([test_y,test_x+xvector])] = [test_y,test_x+(2*xvector)]
+                right_boxes[right_boxes.index([test_y,test_x])] = [test_y,test_x+xvector]
+                if [test_y,test_x+(2*xvector)] in empty:
+                    empty.remove([test_y,test_x+(2*xvector)])
+                    empty.append([test_y,test_x])
                 return True
             else:
                 return False
         else:
             return True
-
-def pushy(test_y,test_x,yvector): #is expanding past where it should. left is going to right territory, and vice versa
-    global boxes, robot,update
-    print(test_y,test_x)
-    if [test_y,test_x] in walls: return False
-    elif [test_y,test_x] in empty:
-        return True
-    elif [test_y,test_x] in left_boxes:
-        left = [test_y,test_x]
-        right = [test_y,test_x+1]
-    elif [test_y,test_x] in right_boxes:
-        left = [test_y,test_x-1]
-        right = [test_y,test_x]
-    print(left,right,yvector)
-    check = [pushy(left[0]+yvector,left[1],yvector),pushy(right[0]+yvector,right[1],yvector)]
-    for element in check:
-        if not element: return False
-    update.append(f'update_y({left},{right},{yvector})')
-    return True
-
-#eval functions to delay handling until I know all boxes can move
-def update_y(left,right,yvector):
-    global boxes, left_boxes,right_boxes,empty
+def y_update(right,left,yvector):
+    global boxes, robot,instr_append
     boxes[boxes.index([left,right])] = [[left[0]+yvector,left[1]],[right[0]+yvector,right[1]]]
     left_boxes[left_boxes.index(left)] = [left[0]+yvector,left[1]]
     right_boxes[right_boxes.index(right)] = [right[0]+yvector,right[1]]
@@ -121,46 +115,50 @@ def update_y(left,right,yvector):
     empty.remove([right[0]+yvector,right[1]])
     empty.append(left)
     empty.append(right)
-
-def update_x_1(xvector,test_y,test_x):
-    global boxes, left_boxes,right_boxes,empty
-    boxes[boxes.index([[test_y,test_x],[test_y,test_x+xvector]])] = [[test_y,test_x+xvector],[test_y,test_x+(2*xvector)]]
-    right_boxes[right_boxes.index([test_y,test_x+xvector])] = [test_y,test_x+(2*xvector)]
-    left_boxes[left_boxes.index([test_y,test_x])] = [test_y,test_x+xvector]
-    if [test_y,test_x+(2*xvector)] in empty:
-        empty.remove([test_y,test_x+(2*xvector)])
-        empty.append([test_y,test_x])
-
-
-def update_x_2(xvector,test_y,test_x):
-    global boxes, left_boxes,right_boxes,empty
-    boxes[boxes.index([[test_y,test_x+xvector],[test_y,test_x]])] = [[test_y,test_x+(2*xvector)],[test_y,test_x+xvector]]
-    left_boxes[left_boxes.index([test_y,test_x+xvector])] = [test_y,test_x+(2*xvector)]
-    right_boxes[right_boxes.index([test_y,test_x])] = [test_y,test_x+xvector]
-    if [test_y,test_x+(2*xvector)] in empty:
-        empty.remove([test_y,test_x+(2*xvector)])
-        empty.append([test_y,test_x])
+def pushy(test_y,test_x,yvector): #update empty to all of the lists too
+    global boxes, robot,instr_append
+    if [test_y,test_x] in walls:
+        instr_append = [False]
+        return [False]
+    elif [test_y,test_x] in empty:
+        return [True,-1]
+    elif [test_y,test_x] in left_boxes:
+        left = [test_y,test_x]
+        right = [test_y,test_x+1]
+    elif [test_y,test_x] in right_boxes:
+        left = [test_y,test_x-1]
+        right = [test_y,test_x]
+    check1 = pushy(left[0]+yvector,left[1],yvector)
+    check2 = pushy(right[0]+yvector,right[1],yvector)
+    print(boxes)
+    if not check1[0] or not check2[0]: return [False]
+    if not instr_append: return [False]
+    #update left and right boxlists as well
+    if check1 == check2 and check1[1] != -1 and check2[1] != -1: y_update(check1[1],check1[2],yvector)
+    else:
+        if check1[1] != -1: y_update(check1[1],check1[2],yvector)
+        if check2[1] != -1:y_update(check2[1],check2[2],yvector)
+    return [True,right,left,yvector]
+    
+    #do blank checking first, then check for recursion
 
 #run the push function for each instructions, then move robot
 print(robot)
-for i,element in enumerate(instr): #how do i fix the updating parable
+for i,element in enumerate(instr):
     vector = movement[element]
     test_y = vector[0] + robot[0]
     test_x = vector[1] + robot[1]
     if [test_y,test_x] in walls: continue
-    update = []
+    instr_append = True
     if vector[0] == 0:
         check = pushx(test_y,test_x,vector[1]) #fixed x function
-        print(*update)
         print(check)
         if check:
-            for instr in update:
-                eval(instr)
             empty.append(robot)
             robot = [test_y,test_x]
             empty.append(robot)
     else:
-        if [test_y,test_x] in empty: #so something is missing because my score is 200 too high
+        if [test_y,test_x] in empty: #so i fixed the updating problem its just im getting a bad number now
             robot = [test_y,test_x]
             continue
         if [test_y,test_x] in left_boxes:
@@ -169,17 +167,14 @@ for i,element in enumerate(instr): #how do i fix the updating parable
         elif [test_y,test_x] in right_boxes:
             left = [test_y,test_x-1]
             right = [test_y,test_x]
-        print(left,right)
-        print(robot)
         print("1")
         check = []
-        check.append(pushy(left[0],left[1],vector[0]))
+        check1=pushy(left[0],left[1],vector[0])
         print("2")
-        check.append(pushy(right[0],right[1],vector[0]))
-        if all(check):
-            for instr in update:
-                print(instr)
-                eval(instr)
+        if check1[0]:
+            print(boxes)
+            print(check1)
+            if check1[1] != -1:y_update(check1[1],check1[2],check1[3])
             empty.append(robot)
             robot = [test_y,test_x]
             empty.append(robot)
@@ -193,3 +188,9 @@ for box in boxes:
     total += y*100 + x
 print(total)
 
+#print function for debugging
+
+def print_board():
+    board = [['']*width] 
+    for i in range(width*height):
+        pass #continue making this
