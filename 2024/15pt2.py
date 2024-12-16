@@ -11,13 +11,30 @@ with open("main.in","r") as file: #ned to acocunt for more lines of instructions
             continue
         if r == 0:grid.append([x for x in line])
         else: instr += line
-
+def printgrid():
+    grid = []
+    #print function for debugging
+    for i in range(height):
+        grid.append([])
+        for j in range(width):
+            if [i,j] in walls:
+                grid[i].append('#')
+            elif [i,j] in empty:
+                grid[i].append('.')
+            elif [i,j] == robot:
+                grid[i].append('@')
+            elif [i,j] in left_boxes:
+                grid[i].append('[')
+            elif [i,j] in right_boxes:
+                grid[i].append(']')
+    for line in grid:
+        print(''.join(line))
 #find robot
 robot = [-1,-1]
 boxes = []
 walls = []
 empty = []
-instr = list(instr)
+instr1 = list(instr)
 for i,line in enumerate(grid):
     for j, element in enumerate(line):
         if element == "@":
@@ -54,6 +71,7 @@ for y,x in empty:
     empty[i] = [y,x*2]
     tempty.append([y,(x*2)+1])
     i+=1
+tempty.append([robot[0],robot[1]+1])
 empty += tempty
 
 #define movement (y,x) reminder up and left is negative
@@ -81,7 +99,6 @@ def pushx(test_y,test_x,xvector): #pushes for x_vector
                 left_boxes[left_boxes.index([test_y,test_x])] = [test_y,test_x+xvector]
                 if [test_y,test_x+(2*xvector)] in empty:
                     empty.remove([test_y,test_x+(2*xvector)])
-                    empty.append([test_y,test_x])
                 return True
             else:
                 return False
@@ -100,14 +117,13 @@ def pushx(test_y,test_x,xvector): #pushes for x_vector
                 right_boxes[right_boxes.index([test_y,test_x])] = [test_y,test_x+xvector]
                 if [test_y,test_x+(2*xvector)] in empty:
                     empty.remove([test_y,test_x+(2*xvector)])
-                    empty.append([test_y,test_x])
                 return True
             else:
                 return False
         else:
             return True
 def y_update(right,left,yvector):
-    global boxes, robot,instr_append
+    global boxes, robot,instr_append,empty
     boxes[boxes.index([left,right])] = [[left[0]+yvector,left[1]],[right[0]+yvector,right[1]]]
     left_boxes[left_boxes.index(left)] = [left[0]+yvector,left[1]]
     right_boxes[right_boxes.index(right)] = [right[0]+yvector,right[1]]
@@ -116,7 +132,7 @@ def y_update(right,left,yvector):
     empty.append(left)
     empty.append(right)
 def pushy(test_y,test_x,yvector): #update empty to all of the lists too
-    global boxes, robot,instr_append
+    global boxes, robot,instr_append,update
     if [test_y,test_x] in walls:
         instr_append = [False]
         return [False]
@@ -130,36 +146,40 @@ def pushy(test_y,test_x,yvector): #update empty to all of the lists too
         right = [test_y,test_x]
     check1 = pushy(left[0]+yvector,left[1],yvector)
     check2 = pushy(right[0]+yvector,right[1],yvector)
-    print(boxes)
     if not check1[0] or not check2[0]: return [False]
     if not instr_append: return [False]
     #update left and right boxlists as well
-    if check1 == check2 and check1[1] != -1 and check2[1] != -1: y_update(check1[1],check1[2],yvector)
+    if check1 == check2:
+        if check1[1] != -1 and check2[1]!=-1: update.append(f'y_update({check1[1]},{check1[2]},{yvector})')
+        #double mutating error here
     else:
-        if check1[1] != -1: y_update(check1[1],check1[2],yvector)
-        if check2[1] != -1:y_update(check2[1],check2[2],yvector)
+        if check1[1] != -1: update.append(f"y_update({check1[1]},{check1[2]},{yvector})")
+        if check2[1] != -1: update.append(f"y_update({check2[1]},{check2[2]},{yvector})")
     return [True,right,left,yvector]
     
     #do blank checking first, then check for recursion
-
 #run the push function for each instructions, then move robot
-print(robot)
-for i,element in enumerate(instr):
+for i,element in enumerate(instr1): 
     vector = movement[element]
     test_y = vector[0] + robot[0]
     test_x = vector[1] + robot[1]
     if [test_y,test_x] in walls: continue
     instr_append = True
     if vector[0] == 0:
-        check = pushx(test_y,test_x,vector[1]) #fixed x function
-        print(check)
+        if [test_y,test_x] in empty:
+            empty.append(robot)
+            robot = [test_y,test_x]
+            empty.remove(robot)
+            continue
+        check = pushx(test_y,test_x,vector[1]) 
         if check:
             empty.append(robot)
             robot = [test_y,test_x]
-            empty.append(robot)
     else:
-        if [test_y,test_x] in empty: #so i fixed the updating problem its just im getting a bad number now
-            robot = [test_y,test_x]
+        if [test_y,test_x] in empty:
+            empty.append(robot)
+            robot = [test_y,test_x] 
+            empty.remove(robot)
             continue
         if [test_y,test_x] in left_boxes:
             left = [test_y,test_x]
@@ -167,30 +187,25 @@ for i,element in enumerate(instr):
         elif [test_y,test_x] in right_boxes:
             left = [test_y,test_x-1]
             right = [test_y,test_x]
-        print("1")
+        update = []
         check = []
         check1=pushy(left[0],left[1],vector[0])
-        print("2")
+        
         if check1[0]:
-            print(boxes)
-            print(check1)
-            if check1[1] != -1:y_update(check1[1],check1[2],check1[3])
+            previnstr = []
+            for instr in update:
+                if instr in previnstr:continue
+                eval(instr)
+                previnstr.append(instr)
+            if check1[1] != -1: y_update(check1[1],check1[2],check1[3])
             empty.append(robot)
             robot = [test_y,test_x]
-            empty.append(robot)
+            empty.remove(robot)
             
 #find total gps coords
-print(boxes)
 total = 0
 for box in boxes:
     y = box[0][0]
     x = box[0][1]
-    total += y*100 + x
+    total += y*100 + x 
 print(total)
-
-#print function for debugging
-
-def print_board():
-    board = [['']*width] 
-    for i in range(width*height):
-        pass #continue making this
