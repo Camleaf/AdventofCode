@@ -1,6 +1,4 @@
-#same as part one just will need to add a few more cases to my function, and refine input. honestly doesnt seem that bad( famous last words  ik)
-#parse input
-with open("main.in","r") as file: #ned to acocunt for more lines of instructions
+with open("main.in","r") as file:
     raw = file.read().split('\n')
     grid = []
     instr = ''
@@ -11,25 +9,8 @@ with open("main.in","r") as file: #ned to acocunt for more lines of instructions
             continue
         if r == 0:grid.append([x for x in line])
         else: instr += line
-def printgrid():
-    grid = []
-    #print function for debugging
-    for i in range(height):
-        grid.append([])
-        for j in range(width):
-            if [i,j] in walls:
-                grid[i].append('#')
-            elif [i,j] in empty:
-                grid[i].append('.')
-            elif [i,j] == robot:
-                grid[i].append('@')
-            elif [i,j] in left_boxes:
-                grid[i].append('[')
-            elif [i,j] in right_boxes:
-                grid[i].append(']')
-    for line in grid:
-        print(''.join(line))
-#find robot
+
+#parse input more
 robot = [-1,-1]
 boxes = []
 walls = []
