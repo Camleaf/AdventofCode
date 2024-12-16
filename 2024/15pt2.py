@@ -92,8 +92,9 @@ def pushx(test_y,test_x,xvector): #pushes for x_vector
         else:
             return True
 
-def pushy(test_y,test_x,yvector):
+def pushy(test_y,test_x,yvector): #is expanding past where it should. left is going to right territory, and vice versa
     global boxes, robot,update
+    print(test_y,test_x)
     if [test_y,test_x] in walls: return False
     elif [test_y,test_x] in empty:
         return True
@@ -103,11 +104,8 @@ def pushy(test_y,test_x,yvector):
     elif [test_y,test_x] in right_boxes:
         left = [test_y,test_x-1]
         right = [test_y,test_x]
-    print(test_y,test_x)
+    print(left,right,yvector)
     check = [pushy(left[0]+yvector,left[1],yvector),pushy(right[0]+yvector,right[1],yvector)]
-    print(test_y,test_x)
-    print([left,right])
-    print(boxes)
     for element in check:
         if not element: return False
     update.append(f'update_y({left},{right},{yvector})')
@@ -132,6 +130,8 @@ def update_x_1(xvector,test_y,test_x):
     if [test_y,test_x+(2*xvector)] in empty:
         empty.remove([test_y,test_x+(2*xvector)])
         empty.append([test_y,test_x])
+
+
 def update_x_2(xvector,test_y,test_x):
     global boxes, left_boxes,right_boxes,empty
     boxes[boxes.index([[test_y,test_x+xvector],[test_y,test_x]])] = [[test_y,test_x+(2*xvector)],[test_y,test_x+xvector]]
@@ -151,6 +151,7 @@ for i,element in enumerate(instr): #how do i fix the updating parable
     update = []
     if vector[0] == 0:
         check = pushx(test_y,test_x,vector[1]) #fixed x function
+        print(*update)
         print(check)
         if check:
             for instr in update:
@@ -168,6 +169,8 @@ for i,element in enumerate(instr): #how do i fix the updating parable
         elif [test_y,test_x] in right_boxes:
             left = [test_y,test_x-1]
             right = [test_y,test_x]
+        print(left,right)
+        print(robot)
         print("1")
         check = []
         check.append(pushy(left[0],left[1],vector[0]))
@@ -175,6 +178,7 @@ for i,element in enumerate(instr): #how do i fix the updating parable
         check.append(pushy(right[0],right[1],vector[0]))
         if all(check):
             for instr in update:
+                print(instr)
                 eval(instr)
             empty.append(robot)
             robot = [test_y,test_x]
