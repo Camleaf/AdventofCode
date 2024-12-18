@@ -39,4 +39,4 @@ def recursivesolve(cur_stone,i):
 total = 0
 for stone in stones:
     total += recursivesolve(stone,0)
-print(total)hain in advance, then compute the length of the chains
+print(total)
