@@ -37,13 +37,12 @@ def part_1(reg_a,reg_b,reg_c,PROGRAM):
             case 7: reg_c = reg_a>>combo
     return out
 
-part_1(reg_a,reg_b,reg_c,PROGRAM)
 #part 2
 #do some kind of cursed bfs. during testing it looks like bsf left 3 works to get a rough estimate of the area of the next element in the key
 queue = deque()
-queue.append([len(PROGRAM),3])
+queue.append([len(PROGRAM)-1,0])
 length = len(PROGRAM)
-end_queue = ()
+end_queue = []
 while queue:
     i, num = queue.popleft()
     if i < 0: continue
@@ -53,6 +52,8 @@ while queue:
         check_program = PROGRAM[i:]
         if new_program == check_program:
             if i == 0:
-                end_queue.append(num)
-            queue.append((i-1,num))
-print(min(end_queue))
+                end_queue.append(new_num)
+            queue.append((i-1,new_num))
+end = min(end_queue)
+print(part_1(end,0,0,PROGRAM))
+print(end)
