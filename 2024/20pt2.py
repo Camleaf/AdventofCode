@@ -88,4 +88,4 @@ for x in cheat_distances_raw[0]:
         cheat_distances.append(x)
 print(len(cheat_distances))
 
-#can instead use dijkstra and build a distance map with stuff but like later when i have more time
+#can instead use dijkstra and build a distance map with stuff but like later when i have more timex
