@@ -33,7 +33,6 @@ def part2():
             out += str(biggest)
         total += int(out)
 
-    print()
     print(total)
 
 
