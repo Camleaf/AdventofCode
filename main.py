@@ -15,7 +15,7 @@ def part1():
     print(total)
 
 
-def part2():
+def part2(): # I love greedy algorithm
     dataset = open("main.in","r").read().split('\n')
 
     total = 0
