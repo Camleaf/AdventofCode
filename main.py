@@ -1,54 +1,42 @@
-import re
 
-
-
-with open("main.in","r") as f:
-    inputStr = f.read().strip().split(',')
 
 def part1():
+    dataset = open("main.in","r").read().split('\n')
 
-    def checkInvalid(val:str)->bool:
-        if (len(val) % 2 == 1):return False
-        firstHalf = val[:len(val)//2]
-        secondHalf = val[len(val)//2:]
-        if (firstHalf==secondHalf): return True
-        return False
-    
     total = 0
-    for rang in inputStr:
-        val1, val2 = rang.split("-")
 
-        for i in range(int(val1),int(val2)+1):
-            if checkInvalid(str(i)):
-                total += i
-    
+    for line in dataset:
+        mp = list(map(int,list(line)))
+        biggest = max(mp[:len(mp)-1]) # it can't be the last one
+        index = mp.index(biggest)
+        second_biggest = max(mp[index+1:])
+        total += int(str(biggest)+str(second_biggest))
+        
     print(total)
 
 
 def part2():
-    def checkInvalid(val:str)-> bool:
-        patternStr = ""
-        for i,letter in enumerate(val):
-            patternStr += letter
-            
-            x = re.findall(patternStr,val)
-            length = len(x)*(i+1)
+    dataset = open("main.in","r").read().split('\n')
 
-            if (length == len(val) and len(x) > 1): 
-                return True
-            if i == (len(val)//2): return False
-    
     total = 0
-    for rang in inputStr:
-        val1, val2 = rang.split("-")
 
-        for i in range(int(val1),int(val2)+1):
-            if checkInvalid(str(i)):
-                total += i
+    for line in dataset:
+        mp = list(map(int,list(line)))
+        # make an algorithm that does the same thing as above but for 12 numbers
+        out = ""
+        rang = len(mp)-11
+        startDex = 0
+        for i in range(12):
+            biggest = max(mp[startDex:rang])
+            startDex = mp[startDex:rang].index(biggest)+1
+            rang += 1
+            out += str(biggest)
+
+        total += int(out)
 
 
     print(total)
-    
+
 
 if __name__ == "__main__":
     print("Part 1 answer: ",end="")
