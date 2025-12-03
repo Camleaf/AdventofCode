@@ -26,20 +26,19 @@ def part2():
         out = ""
         rang = len(mp)-11
         startDex = 0
-        for i in range(12):
+        for i in range(12): # it makes a moving window
             biggest = max(mp[startDex:rang])
-            startDex = mp[startDex:rang].index(biggest)+1
+            startDex = mp[startDex:rang].index(biggest)+1+startDex
             rang += 1
             out += str(biggest)
-
         total += int(out)
 
-
+    print()
     print(total)
 
 
 if __name__ == "__main__":
-    print("Part 1 answer: ",end="")
-    part1()
-    print("Part 2 answer: ",end="")
+    # print("Part 1 answer: ",end="")
+    # part1()
+    # print("Part 2 answer: ",end="")
     part2()
