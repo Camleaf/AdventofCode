@@ -38,7 +38,7 @@ def part2():
 
 
 if __name__ == "__main__":
-    # print("Part 1 answer: ",end="")
-    # part1()
-    # print("Part 2 answer: ",end="")
+    print("Part 1 answer: ",end="")
+    part1()
+    print("Part 2 answer: ",end="")
     part2()
