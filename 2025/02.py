@@ -2,7 +2,7 @@ import re
 
 
 
-with open("main.in","r") as f:
+with open("2025/inputs/02.txt","r") as f:
     inputStr = f.read().strip().split(',')
 
 def part1():
@@ -22,7 +22,7 @@ def part1():
             if checkInvalid(str(i)):
                 total += i
     
-    print(total)
+    return total
 
 
 def part2():
@@ -47,11 +47,5 @@ def part2():
                 total += i
 
 
-    print(total)
+    return total
     
-
-if __name__ == "__main__":
-    print("Part 1 answer: ",end="")
-    part1()
-    print("Part 2 answer: ",end="")
-    part2()

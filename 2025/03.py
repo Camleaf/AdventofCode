@@ -12,7 +12,7 @@ def part1():
         second_biggest = max(mp[index+1:])
         total += int(str(biggest)+str(second_biggest))
         
-    print(total)
+    return total
 
 
 def part2():
@@ -33,11 +33,4 @@ def part2():
             out += str(biggest)
         total += int(out)
 
-    print(total)
-
-
-if __name__ == "__main__":
-    print("Part 1 answer: ",end="")
-    part1()
-    print("Part 2 answer: ",end="")
-    part2()
+    return total

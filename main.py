@@ -15,7 +15,12 @@ def part1():
     print(total)
 
 
-def part2(): # I love greedy algorithm
+
+
+
+
+
+def part2():
     dataset = open("main.in","r").read().split('\n')
 
     total = 0
@@ -37,7 +42,14 @@ def part2(): # I love greedy algorithm
 
 
 if __name__ == "__main__":
+    import time
+    startTime = time.time()
     print("Part 1 answer: ",end="")
     part1()
-    print("Part 2 answer: ",end="")
+    part1Time = time.time()
+    print(f"Part 2 answer: ")
     part2()
+    part2Time = time.time()
+    print("\n")
+    print("Part 1 time:",str(round(1000*(part1Time-startTime),4)) + "ms")
+    print("Part 2 time:",str(round(1000*(part2Time-startTime),4)) + "ms")
