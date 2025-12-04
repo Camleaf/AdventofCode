@@ -5,7 +5,7 @@
 import os, time
 from types import ModuleType
 import importlib
-clear:callable = lambda : os.system('clear')
+clear = lambda : os.system('clear')
 
 if __name__ == "__main__":
     clear()
