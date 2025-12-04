@@ -17,7 +17,7 @@ def part1():
         return True
 
 
-    with open("main.in","r") as file:
+    with open("2025/inputs/04.txt","r") as file:
         grid = Grid(file.read())
     
     total = 0
@@ -45,7 +45,7 @@ def part2():
         return True
     
 
-    with open("main.in","r") as file:
+    with open("2025/inputs/04.txt","r") as file:
         grid = Grid(file.read())
         
     

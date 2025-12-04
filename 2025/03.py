@@ -1,7 +1,7 @@
 
 
 def part1():
-    dataset = open("main.in","r").read().split('\n')
+    dataset = open("2025/inputs/03.txt","r").read().split('\n')
 
     total = 0
 
@@ -16,7 +16,7 @@ def part1():
 
 
 def part2():
-    dataset = open("main.in","r").read().split('\n')
+    dataset = open("2025/inputs/03.txt","r").read().split('\n')
 
     total = 0
 
