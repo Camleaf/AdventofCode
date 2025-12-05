@@ -1,76 +1,73 @@
-from grid import *
 
 
 def part1():
+    with open('main.in','r') as file:
+        dataset = file.read().splitlines()
+    
 
-    def check_eight(row:int,col:int,grid:Grid) -> bool:
-        
-        if (grid.get_node_val(row,col)!="@"):
-            return
-        check = 0
-        for (y,x) in ((0,1),(0,-1),(1,0),(-1,0),(1,1),(1,-1),(-1,1),(-1,-1)):
-            if not (0 <= row + y < len(grid._grid) and 0<=col+x<len(grid._grid[0])): continue
-            if (grid.get_node_val(row+y,col+x)=="@"):
-                check+=1
-            if (check >= 4):
-                return False
-        return True
-
-
-    with open("main.in","r") as file:
-        grid = Grid(file.read())
+    ranges = []
+    index = 0 # current way thru dataset
+    for line in dataset: # parse ranges. Ranges are inclusive
+        index+=1
+        if line == '': break
+        ranges.append(tuple(map(int,line.split('-'))))
     
     total = 0
-
-    for i, row in enumerate(grid._grid):
-        for j, el in enumerate(row):
-            if check_eight(i,j,grid):
-                total += 1
-
+    for line in dataset[index:]:
+        fresh = False
+        for range in ranges:
+            if range[0] <= int(line) <= range[1]:
+                fresh = True
+                break
+        if fresh:
+            total += 1
     return total
 
 
+from collections import defaultdict
 def part2():
-    def check_eight(row:int,col:int,grid:Grid) -> bool:
-            
-        if (grid.get_node_val(row,col)!="@"):
-            return
-        check = 0
-        for (y,x) in ((0,1),(0,-1),(1,0),(-1,0),(1,1),(1,-1),(-1,1),(-1,-1)):
-            if not (0 <= row + y < len(grid._grid) and 0<=col+x<len(grid._grid[0])): continue
-            if (grid.get_node_val(row+y,col+x)=="@"):
-                check+=1
-            if (check >= 4):
-                return False
-        return True
+    with open('main.in','r') as file:
+        dataset = file.read().splitlines()
     
 
-    with open("main.in","r") as file:
-        grid = Grid(file.read())
-        
-    
-
-    iterList = [] # for faster iterations over the specific item we want
-    for i, row in enumerate(grid._grid):
-        for j, el in enumerate(row):
-            if grid.get_node_val(i,j) == "@":
-                iterList.append((i,j))
-    
+    ranges = []
+    index = 0 # current way thru dataset
+    for line in dataset: # parse ranges. Ranges are inclusive
+        index+=1
+        if line == '': break
+        ranges.append(tuple(map(int,line.split('-'))))
 
     total = 0
-    picked = 1
-    while picked != 0:
-        picked = 0
-        newIterList = [x for x  in iterList.copy()]
-        for (i,j) in iterList:
-            if (check_eight(i,j,grid)):
-                grid.set_node_val(i,j,".")
-                newIterList.remove((i,j))
-                picked += 1
-                total += 1
-        iterList = [x for x in newIterList]
+    for i,range in enumerate(ranges):
+        temptotal = range[1] - range[0]+1 # need to figure out how to union these ranges
+        for j,range2 in enumerate(ranges):
+
+            if i <= j: #only checks overlap if the current cehck is after
+                continue
+            
+            if (range[0] >= range2[0] and range[1] <= range2[1]):
+                temptotal = 0
+                break
+
+            if (range2[0]<=range[0]<=range2[1]<=range[1]):
+                temptotal-=(range2[1]-range[0])
+                temptotal-=1
+
+            if (range[0]<=range2[0]<=range[1]<=range2[1]):
+                temptotal-=(range[1]-range2[0])
+                temptotal-=1
+            print(range,range2)
+            
+
+            
+            # cases:
+            # r1 r2 e1 e2
+            # r2 r1 e2 e1
+            # r2 r1 e1 e2
+        print(temptotal)
+        total += temptotal
     return total
-                
+
 
 
 if __name__ == "__main__":
