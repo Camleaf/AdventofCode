@@ -24,48 +24,41 @@ def part1():
     return total
 
 
-from collections import defaultdict
 def part2():
     with open('main.in','r') as file:
         dataset = file.read().splitlines()
     
+
+    def inRange(x,iterRange) -> bool:
+        if (iterRange[0]<=x<iterRange[1]):
+            return True
+        return False
+
 
     ranges = []
     index = 0 # current way thru dataset
     for line in dataset: # parse ranges. Ranges are inclusive
         index+=1
         if line == '': break
-        ranges.append(tuple(map(int,line.split('-'))))
+        x = list(map(int,line.split('-')))
+        x[1]+=1
+        ranges.append(x)
 
     total = 0
-    for i,range in enumerate(ranges):
-        temptotal = range[1] - range[0]+1 # need to figure out how to union these ranges
-        for j,range2 in enumerate(ranges):
+    lrange = tuple((0,0))
 
-            if i <= j: #only checks overlap if the current cehck is after
-                continue
+    for ran in sorted(ranges,key=lambda r :r[0]):
+        
+        if inRange(ran[0],lrange):
+            if not inRange(ran[1],lrange):
+                total += ran[1] - lrange[1]
+                lrange = tuple((lrange[0],ran[1]))
+        else:
             
-            if (range[0] >= range2[0] and range[1] <= range2[1]):
-                temptotal = 0
-                break
+            total += ran[1]-ran[0]
+            lrange=ran
+    
 
-            if (range2[0]<=range[0]<=range2[1]<=range[1]):
-                temptotal-=(range2[1]-range[0])
-                temptotal-=1
-
-            if (range[0]<=range2[0]<=range[1]<=range2[1]):
-                temptotal-=(range[1]-range2[0])
-                temptotal-=1
-            print(range,range2)
-            
-
-            
-            # cases:
-            # r1 r2 e1 e2
-            # r2 r1 e2 e1
-            # r2 r1 e1 e2
-        print(temptotal)
-        total += temptotal
     return total
 
 
