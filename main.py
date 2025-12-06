@@ -119,29 +119,6 @@ def part2():
     return total
 
 
-    # for i,opList in enumerate(mathGroups):
-    #     maxLen = len(str(max(list(map(int,opList)))))
-    #     temp = 0
-    #     for j in range(maxLen):
-    #         curBuild = ''
-    #         for num in opList:
-    #             if maxLen-j > len(num):
-    #                 continue
-    #             curBuild += num[maxLen-1-j]
-            
-    #         print(curBuild)
-    #         curBuild = int(curBuild)
-    #         if (temp == 0):
-    #             temp = int(curBuild)
-    #         elif operations[i] == "*":
-    #             temp *= int(curBuild)
-    #         elif operations[i] == "+":
-    #             temp += int(curBuild)
-    #     print("=",temp)
-    #     print()
-    #     total += temp
-
-
 
 if __name__ == "__main__":
     print("Part 1:",part1())
