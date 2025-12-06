@@ -1,65 +1,145 @@
-
+import re
 
 def part1():
     with open('main.in','r') as file:
-        dataset = file.read().splitlines()
+        raw = file.read().splitlines()
+
+    dataset = []
+    operations = []
+    patternStr = "\\b\\d+\\b"
+    for i,line in enumerate(raw):
+        
+        if i != len(raw)-1:
+            x = re.findall(patternStr,line)
+            dataset.append(x)
+        else:
+            patternStr = "(?:[+]|[*])+"
+            x = re.findall(patternStr,line)
+            operations = x
+        
+    total = 0
+    for i,x in enumerate(operations):
+        temp = -1
+        for j in range(len(dataset)):
+            if temp == -1:
+                temp = int(dataset[j][i])
+            elif x == "*":
+                temp *= int(dataset[j][i])
+            elif x == "+":
+                temp += int(dataset[j][i])
+        total += temp
+    return total
     
 
-    ranges = []
-    index = 0 # current way thru dataset
-    for line in dataset: # parse ranges. Ranges are inclusive
-        index+=1
-        if line == '': break
-        ranges.append(tuple(map(int,line.split('-'))))
-    
-    total = 0
-    for line in dataset[index:]:
-        fresh = False
-        for range in ranges:
-            if range[0] <= int(line) <= range[1]:
-                fresh = True
-                break
-        if fresh:
-            total += 1
-    return total
 
 
 def part2():
     with open('main.in','r') as file:
-        dataset = file.read().splitlines()
-    
+        raw = file.read().splitlines()
 
-    def inRange(x,iterRange) -> bool:
-        if (iterRange[0]<=x<iterRange[1]):
-            return True
-        return False
+    dataset = []
+    operations = []
+    patternStr = "\\b\\d+\\b"
 
+    operationLengths = []
 
-    ranges = []
-    index = 0 # current way thru dataset
-    for line in dataset: # parse ranges. Ranges are inclusive
-        index+=1
-        if line == '': break
-        x = list(map(int,line.split('-')))
-        x[1]+=1
-        ranges.append(x)
+    spaces = 0
+    index = 0
+    for letter in raw[len(raw)-1]:
+        if letter == ' ':
+            spaces += 1
+            continue
 
-    total = 0
-    lrange = tuple((0,0))
-
-    for ran in sorted(ranges,key=lambda r :r[0]):
+        operations.append(letter)
+        if (index != 0):
+            operationLengths.append(spaces)
+            spaces = 0
         
-        if inRange(ran[0],lrange):
-            if not inRange(ran[1],lrange):
-                total += ran[1] - lrange[1]
-                lrange = tuple((lrange[0],ran[1]))
+        index += 1
+    
+    operationLengths.append(spaces+1)
+
+
+
+
+    for i,line in enumerate(raw):
+        
+        if i != len(raw)-1:
+            # x = re.findall(patternStr,line)
+            x = []
+            # dataset.append(x)
+            idx = 0
+            for length in operationLengths:
+                curBuild = ''
+                for i in range(length):
+                    if line[idx] == ' ':
+                        curBuild += '0'
+                    else:
+                        curBuild += line[idx]
+                    idx += 1
+                idx+=1
+                x.append(curBuild)
+            dataset.append(x)
+                
         else:
-            
-            total += ran[1]-ran[0]
-            lrange=ran
+            patternStr = "(?:[+]|[*])+"
+            x = re.findall(patternStr,line)
+            operations = x
+
+
+
+    mathGroups = []
+    total = 0
+    for i,x in enumerate(operations):
+        temp = []
+        for j in range(len(dataset)):
+            temp.append(dataset[j][i])
+        mathGroups.append(temp)
     
 
+
+    for i, opList in enumerate(mathGroups):
+        maxLen = operationLengths[i]
+        temp = 0
+        for j in range(maxLen):
+            curBuild = ''
+            for num in opList:
+                if num[j] != "0":
+                    curBuild += num[j]
+
+            curBuild = int(curBuild)
+            if (temp == 0):
+                temp = int(curBuild)
+            elif operations[i] == "*":
+                temp *= int(curBuild)
+            elif operations[i] == "+":
+                temp += int(curBuild)
+        total += temp
+    
     return total
+
+
+    # for i,opList in enumerate(mathGroups):
+    #     maxLen = len(str(max(list(map(int,opList)))))
+    #     temp = 0
+    #     for j in range(maxLen):
+    #         curBuild = ''
+    #         for num in opList:
+    #             if maxLen-j > len(num):
+    #                 continue
+    #             curBuild += num[maxLen-1-j]
+            
+    #         print(curBuild)
+    #         curBuild = int(curBuild)
+    #         if (temp == 0):
+    #             temp = int(curBuild)
+    #         elif operations[i] == "*":
+    #             temp *= int(curBuild)
+    #         elif operations[i] == "+":
+    #             temp += int(curBuild)
+    #     print("=",temp)
+    #     print()
+    #     total += temp
 
 
 

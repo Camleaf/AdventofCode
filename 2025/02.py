@@ -26,7 +26,7 @@ def part1():
 
 
 def part2():
-    def checkInvalid(val:str)-> bool:
+    def checkInvalid(val:str):
         patternStr = ""
         for i,letter in enumerate(val):
             patternStr += letter

@@ -3,7 +3,7 @@ from grid import *
 
 def part1():
 
-    def check_eight(row:int,col:int,grid:Grid) -> bool:
+    def check_eight(row:int,col:int,grid:Grid):
         
         if (grid.get_node_val(row,col)!="@"):
             return
@@ -31,7 +31,7 @@ def part1():
 
 
 def part2():
-    def check_eight(row:int,col:int,grid:Grid) -> bool:
+    def check_eight(row:int,col:int,grid:Grid):
             
         if (grid.get_node_val(row,col)!="@"):
             return
