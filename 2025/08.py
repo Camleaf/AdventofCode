@@ -37,7 +37,7 @@ def part1():
         x,y,z = list(map(int,line.split(',')))
         junk = Junction(x,y,z,i)
 
-        for tempJunk in junk:
+        for tempJunk in junctions:
             x1,y1,z1 = junk.x,junk.y,junk.z
             x2,y2,z2 = tempJunk.x, tempJunk.y, tempJunk.z
 
