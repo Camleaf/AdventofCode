@@ -65,7 +65,7 @@ def part2():
             if val.val == "^":
                 splitters[y].append(x)
     
-    def getIdentical(beamQuery,beams):
+    def groupIdentical(beamQuery,beams): 
         newBeams = set()
         thisBeam = [beamQuery[0],beamQuery[1]]
 
@@ -93,15 +93,15 @@ def part2():
                 splitTotal += 1
                 if not (beamX-1 < 0):
                     testBeam = (beamX-1,timelines)
-                    newBeams = getIdentical(testBeam,newBeams)
+                    newBeams = groupIdentical(testBeam,newBeams)
 
                 if (beamX+1 != width):
                     testBeam = (beamX+1, timelines)
-                    newBeams = getIdentical(testBeam,newBeams)
+                    newBeams = groupIdentical(testBeam,newBeams)
                 continue
             # if not in line keep going
             testBeam = (beamX, timelines)
-            newBeams = getIdentical(testBeam,newBeams)
+            newBeams = groupIdentical(testBeam,newBeams)
         beams = newBeams
     total = 0
 
