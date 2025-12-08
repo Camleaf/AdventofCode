@@ -1,45 +1,119 @@
-import re
+import re, math
 from grid import *
+
+
+class Junction:
+    x:int
+    y:int
+    z:int
+    ID:int
+    def __init__(self,x1,y1,z1,ID):
+        self.x,self.y,self.z,self.ID = x1,y1,z1,ID
+    def __str__(self):
+        return f"{self.ID}"
+    def __repr(self):
+        return f"Junction: {self.ID}"
+
+class Path:
+    junkFrom:Junction
+    junkTo:Junction
+    dist:int
+    def __init__(self, junkFrom, junkTo,dist):
+        self.junkFrom=junkFrom
+        self.junkTo=junkTo
+        self.dist=dist
+
+    def __repr__(self):
+        return f"{self.dist} | from: {self.junkFrom} to: {self.junkTo}\n"
 
 def part1():
     with open('main.in','r') as file:
-        raw = file.read()
+        raw = file.read().splitlines()
     
 
-    grid = Grid(raw)
-    splitters = []
-    start = 0
-    width = len(grid._grid[0])
-    height = len(grid._grid)
+    nodes:dict[Junction,list[Path]] = {}
+    paths:list[Path] = []
+    for i,line in enumerate(raw):
+        x,y,z = list(map(int,line.split(',')))
+        junk = Junction(x,y,z,i)
 
-    for y,line in enumerate(grid._grid):
-        splitters.append([])
-        for x,val in enumerate(line):
-            if val.val == "S": # shoul dbe one of these
-                start = x
-            if val.val == "^":
-                splitters[y].append(x)
+        temp = []
+
+        for tempJunk in nodes.keys():
+            x1,y1,z1 = junk.x,junk.y,junk.z
+            x2,y2,z2 = tempJunk.x, tempJunk.y, tempJunk.z
+
+            dist = math.sqrt(((x2-x1)**2)+((y2-y1)**2)+((z2-z1)**2))
+            path = Path(junk,tempJunk,dist)
+            temp.append(path)
+
+            paths.append(path)
+
+        
+
+        nodes[junk] = temp
+
+
+    circuits = []
+
+    idx = 0
+    for path in sorted(paths,key=lambda x: x.dist): #what happens if two circuits become linked
+
+        foundCircuits = []
+        foundJunk1 = False
+        foundJunk2 = False
+        for cindex,circuit in enumerate(circuits):
+            if path.junkFrom in circuit and path.junkTo in circuit:
+                break
+            elif path.junkFrom in circuit or path.junkTo in circuit:
+                foundCircuits.append(cindex)
+                
+                
+        
+        if len(foundCircuits)==0:
+            newCirc = set()
+            newCirc.add(path.junkFrom)
+            newCirc.add(path.junkTo)
+            circuits.append(newCirc)
+        elif len(foundCircuits) == 1:
+            cindex = foundCircuits[0]
+            circuits[cindex].add(path.junkFrom)
+            circuits[cindex].add(path.junkTo)
+        else:
+            newCircuits = []
+            mergedCircuit = set()
+            for j,circuit in enumerate(circuits):
+                if j not in foundCircuits:
+                    newCircuits.append(circuit)
+                    continue
+                #otherwise
+                for tempJunk in circuit:
+                    mergedCircuit.add(tempJunk)
+            newCircuits.append(mergedCircuit)
+            circuits = newCircuits
+
+
+        idx+=1
+        if idx==1000: #11 for test, 1000 for real
+            break
     
-    beams = set()
-    beams.add(start)
-    splitTotal = 0
-    for y,splitterLine in enumerate(splitters):
 
-        newBeams = set()
-        for beamX in beams:
-            if beamX in splitterLine:
-                splitTotal += 1
-                if (beamX-1 != 0):
-                    newBeams.add(beamX-1)
-                if (beamX+1 != width):
-                    newBeams.add(beamX+1)
-                continue
-            # if not in line keep going
-            newBeams.add(beamX)
-        beams = newBeams
+    total = 0
+    idx = 0
+    for circuit in sorted(circuits,key=lambda x: len(x),reverse=True):
+        # print(len(circuit))
+        if total == 0:
+            total = len(circuit)
+        else:
+            total *= len(circuit)
+        idx+=1
+        if idx==3:
+            break
+    return total
 
-    return splitTotal
-    
+
+
+
     
 
     
@@ -51,66 +125,8 @@ def part2():
     
 
 
-    grid = Grid(raw)
-    splitters = []
-    start = 0
-    width = len(grid._grid[0])
-    height = len(grid._grid)
-
-    for y,line in enumerate(grid._grid):
-        splitters.append([])
-        for x,val in enumerate(line):
-            if val.val == "S": # shoul dbe one of these
-                start = x
-            if val.val == "^":
-                splitters[y].append(x)
-    
-    def getIdentical(beamQuery,beams):
-        newBeams = set()
-        thisBeam = [beamQuery[0],beamQuery[1]]
-
-        for beam in beams:
-            if beam[0] == beamQuery[0]:
-                thisBeam[1]+=beam[1]
-            else:
-                newBeams.add(beam)
-            
-
-        newBeams.add(tuple(x for x in thisBeam))
-        return newBeams
-                
-
-    beams = set()
-    beams.add((start,1)) # x, timelines
-    splitTotal = 0
-    for y,splitterLine in enumerate(splitters):
-
-        newBeams = set() #i need to check if equal by xpos
-        for beam in beams:
-            beamX = beam[0]
-            timelines = beam[1]
-            if beamX in splitterLine:
-                splitTotal += 1
-                if not (beamX-1 < 0):
-                    testBeam = (beamX-1,timelines)
-                    newBeams = getIdentical(testBeam,newBeams)
-
-                if (beamX+1 != width):
-                    testBeam = (beamX+1, timelines)
-                    newBeams = getIdentical(testBeam,newBeams)
-                continue
-            # if not in line keep going
-            testBeam = (beamX, timelines)
-            newBeams = getIdentical(testBeam,newBeams)
-        beams = newBeams
-    total = 0
-
-    for beam in beams:
-        total += beam[1]
-    return total
-
-
 
 if __name__ == "__main__":
     print("Part 1:",part1())
     print("Part 2:",part2())
+
