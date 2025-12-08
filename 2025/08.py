@@ -136,7 +136,7 @@ def part2():
             paths.append(path)
 
 
-    circuits = [[junk] for junk in junctions]
+    circuits = [set([junk]) for junk in junctions]
     lastOne = None
 
     for path in sorted(paths,key=lambda x: x.dist): #what happens if two circuits become linked
@@ -154,7 +154,7 @@ def part2():
                 
         
         if len(foundCircuits)==0:
-            newCirc = set()
+            newCirc:set[Junction] = set()
             newCirc.add(path.junkFrom)
             newCirc.add(path.junkTo)
             circuits.append(newCirc)
@@ -184,7 +184,7 @@ def part2():
         
 
     idx = 0
-
+    if lastOne is None: return -1
     return lastOne.junkFrom.x * lastOne.junkTo.x
     
 
