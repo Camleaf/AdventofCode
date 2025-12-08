@@ -60,8 +60,6 @@ def part1():
     for path in sorted(paths,key=lambda x: x.dist): #what happens if two circuits become linked
 
         foundCircuits = []
-        foundJunk1 = False
-        foundJunk2 = False
         for cindex,circuit in enumerate(circuits):
             if path.junkFrom in circuit and path.junkTo in circuit:
                 break
@@ -151,19 +149,21 @@ def part2():
         nodes[junk] = temp
 
     junctions = sorted(junctions, key=lambda x: x.ID)
-    circuits = []
+    circuits = [[junk] for junk in junctions]
     lastOne = None
 
     for path in sorted(paths,key=lambda x: x.dist): #what happens if two circuits become linked
 
         foundCircuits = []
-
+        bothIn = False
         for cindex,circuit in enumerate(circuits):
             if path.junkFrom in circuit and path.junkTo in circuit:
+                bothIn = True
                 break
             elif path.junkFrom in circuit or path.junkTo in circuit:
                 foundCircuits.append(cindex)
-                
+        if bothIn:
+            continue
                 
         
         if len(foundCircuits)==0:
@@ -188,17 +188,16 @@ def part2():
                 for tempJunk in circuit:
                     mergedCircuit.add(tempJunk)
             newCircuits.append(mergedCircuit)
+            mergedCircuit.add(path.junkFrom)
+            mergedCircuit.add(path.junkTo)
             circuits = newCircuits
-            if (len(circuits[0]) == len(junctions)):
-                lastOne = path
-                break
+        if (len(circuits) == 1):
+            lastOne = path
+            break
         
 
-    
-
-
     idx = 0
-    print(lastOne.junkFrom.x,lastOne.junkTo.x)
+
     return lastOne.junkFrom.x * lastOne.junkTo.x
     
 
