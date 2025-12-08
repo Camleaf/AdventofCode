@@ -120,8 +120,86 @@ def part1():
 
 
 def part2():
+    # to solve this, check when circuit[0] == junctions to find last el
+    #
+
     with open('main.in','r') as file:
-        raw = file.read()
+        raw = file.read().splitlines()
+    
+
+    nodes:dict[Junction,list[Path]] = {}
+    junctions:list[Junction] = []
+    paths:list[Path] = []
+    for i,line in enumerate(raw):
+        x,y,z = list(map(int,line.split(',')))
+        junk = Junction(x,y,z,i)
+        junctions.append(junk)
+        temp = []
+
+        for tempJunk in nodes.keys():
+            x1,y1,z1 = junk.x,junk.y,junk.z
+            x2,y2,z2 = tempJunk.x, tempJunk.y, tempJunk.z
+
+            dist = math.sqrt(((x2-x1)**2)+((y2-y1)**2)+((z2-z1)**2))
+            path = Path(junk,tempJunk,dist)
+            temp.append(path)
+
+            paths.append(path)
+
+        
+
+        nodes[junk] = temp
+
+    junctions = sorted(junctions, key=lambda x: x.ID)
+    circuits = []
+    lastOne = None
+
+    for path in sorted(paths,key=lambda x: x.dist): #what happens if two circuits become linked
+
+        foundCircuits = []
+
+        for cindex,circuit in enumerate(circuits):
+            if path.junkFrom in circuit and path.junkTo in circuit:
+                break
+            elif path.junkFrom in circuit or path.junkTo in circuit:
+                foundCircuits.append(cindex)
+                
+                
+        
+        if len(foundCircuits)==0:
+            newCirc = set()
+            newCirc.add(path.junkFrom)
+            newCirc.add(path.junkTo)
+            circuits.append(newCirc)
+  
+        elif len(foundCircuits) == 1:
+            cindex = foundCircuits[0]
+            circuits[cindex].add(path.junkFrom)
+            circuits[cindex].add(path.junkTo)
+
+        else:
+            newCircuits = []
+            mergedCircuit = set()
+            for j,circuit in enumerate(circuits):
+                if j not in foundCircuits:
+                    newCircuits.append(circuit)
+                    continue
+                #otherwise
+                for tempJunk in circuit:
+                    mergedCircuit.add(tempJunk)
+            newCircuits.append(mergedCircuit)
+            circuits = newCircuits
+            if (len(circuits[0]) == len(junctions)):
+                lastOne = path
+                break
+        
+
+    
+
+
+    idx = 0
+    print(lastOne.junkFrom.x,lastOne.junkTo.x)
+    return lastOne.junkFrom.x * lastOne.junkTo.x
     
 
 
