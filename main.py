@@ -10,7 +10,7 @@ class Point:
         self.x = x
         self.y = y
         self.grouped = x + y
-        
+
 def part1():
     with open('main.in','r') as file:
         raw = file.read().splitlines()
@@ -46,8 +46,6 @@ def part1():
 
 
 def part2():
-    # to solve this, check when circuit[0] == junctions to find last el
-    #
 
     with open('main.in','r') as file:
         raw = file.read().splitlines()
