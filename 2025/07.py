@@ -2,7 +2,7 @@ import re
 from grid import *
 
 def part1():
-    with open('main.in','r') as file:
+    with open('2025/inputs/07.txt','r') as file:
         raw = file.read()
     
 
@@ -46,7 +46,7 @@ def part1():
 
 
 def part2():
-    with open('main.in','r') as file:
+    with open('2025/inputs/07.txt','r') as file:
         raw = file.read()
     
 

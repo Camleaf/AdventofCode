@@ -1,7 +1,7 @@
 import re
 
 def part1():
-    with open('main.in','r') as file:
+    with open('2025/inputs/06.txt','r') as file:
         raw = file.read().splitlines()
 
     dataset = []
@@ -34,7 +34,7 @@ def part1():
 
 
 def part2():
-    with open('main.in','r') as file:
+    with open('2025/inputs/06.txt','r') as file:
         raw = file.read().splitlines()
 
     dataset = []

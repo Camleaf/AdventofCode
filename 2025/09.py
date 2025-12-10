@@ -14,7 +14,7 @@ class Point:
         self.grouped = x + y
 
 def part1():
-    with open('main.in','r') as file:
+    with open('2025/inputs/09.txt','r') as file:
         raw = file.read().splitlines()
     
     points:list[Point] = []
@@ -63,7 +63,7 @@ class Line:
 
 def part2():
 
-    with open('main.in','r') as file:
+    with open('2025/inputs/09.txt','r') as file:
         raw = file.read().splitlines()
 
     points:list[Point] = []

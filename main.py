@@ -1,100 +1,91 @@
 import re, math
 from grid import *
-from typing import Self
-from shapely import LineString, Polygon
+from functools import cache
 
-
-class Point:
-    x:int
-    y:int
-    grouped:int
-    def __init__(self,x,y):
-        self.x = x
-        self.y = y
-        self.grouped = x + y
-
+found:bool = False
 def part1():
+    global found
+    class Machine:
+        buttons:tuple[tuple[int]]
+        indicatorLength:int
+        finalIndicators:list[bool] # true for on, false for off
+        currentIndicators:list[bool]
+        def __init__(self,finalIndicators,buttons):
+            self.buttons = buttons
+            self.finalIndicators = finalIndicators
+            self.indicatorLength = len(finalIndicators)
+            self.currentIndicators = [False for x in range(self.indicatorLength)]
+    
     with open('main.in','r') as file:
         raw = file.read().splitlines()
+
+    machines:list[Machine] = []
     
-    points:list[Point] = []
     for line in raw:
-        x,y = list(map(int,line.split(',')))
-        points.append(Point(x,y))
+        finalPatternRaw = re.findall("\\[([.#]+)\\]",line)[0]
+        buttonsRaw = re.findall("\\((\\d(?:,\\d)*)\\)",line)
+        finalPattern = [True if x == "#" else False for x in finalPatternRaw]
+        buttons = tuple([tuple([int(x) for x in btn.split(',')]) for btn in buttonsRaw])
+        machine = Machine(finalPattern,buttons)
+        machines.append(machine)
 
-    points = sorted(points,key=lambda x: x.grouped)
+    # this may be  a recursion/dp day
 
-    biggest = 0
-    for i, point in enumerate(points):
-        for j, point2 in enumerate(points[::-1]):
-            if point == point2:
-                continue
-            test = (abs(point2.x-point.x)+1) * (abs(point2.y-point.y)+1)
-            if test > biggest:
-                biggest = test
+    # start by applying all which will get the last one correct, then shorten the list for each of those and move on to the next
+
+
+    def doCount(currentIndicators:list[bool],finalIndicator:list[bool],buttons:tuple[tuple[int]],prevButtonIdx=-1):
+        global found
+
+        if currentIndicators == finalIndicator:
+            found = True
+            return 1
     
-    return biggest
 
+        if found:
+            return 1e15
+        
+        smallest = 1e15
+        for i,button in enumerate(buttons):
+            if prevButtonIdx == i:continue
+            print(button)
+            newIndicators = currentIndicators.copy()
+            for x in button: # invert
+                newIndicators[x] = False if newIndicators[x] else True
+
+            count = doCount(newIndicators, finalIndicator,buttons,i) + 1
+            if count < smallest:
+                smallest = count
+        count = doCount(currentIndicators, finalIndicator,buttons,i)
+        if count < smallest:
+            smallest = count
+        print("")
+        return smallest
     
 
-
-
-class Line:
-    start:Point
-    end:Point
-    vertical:bool
-
-    def __init__(self,start,end):
-        self.start = start
-        self.end = end
-        if start.x == end.x:
-            self.vertical = True
-        else:
-            self.vertical = False
-    def getCoord(self):
-        return ((self.start.x,self.start.y),(self.end.x,self.end.y))
-
-
-    def intersects(self,line:Self): #continue this intersection func
-        slf = LineString(self.getCoord())
-        ln = LineString(line.getCoord())
-        return slf.intersects(ln)
+    total = 0
+    for machine in machines: # the idea is here the implenmentation is not
+        found = False
+        machine = machines[0]
+        x = doCount(machine.currentIndicators,machine.finalIndicators,machine.buttons)
+        print(x)
+        total += x
+        break
+    
+    return total
+                
             
+        
+
+
 
 def part2():
 
     with open('main.in','r') as file:
         raw = file.read().splitlines()
 
-    points:list[Point] = []
-    polyPoints = []
-    for line in raw:
-        x,y = list(map(int,line.split(',')))
-        points.append(Point(x,y))
-        polyPoints.append((x,y))
-
-
-    polygon = Polygon(polyPoints)
-    points = sorted(points,key=lambda x: x.grouped)
     
-    
-    biggest = 0
-    for i, point in enumerate(points):
-        for j, point2 in enumerate(points[::-1]): # i definitely can optimize this, as it likely repeats stuff a lot
-            if point == point2:
-                continue
-            
-            rect = Polygon([[point.x,point.y],[point.x,point2.y],[point2.x,point2.y],[point2.x,point.y]])
-            
-            if polygon.contains(rect):
-
-                test = (abs(point2.x-point.x)+1) * (abs(point2.y-point.y)+1)
-
-                
-                if test > biggest:
-                    biggest = test
-    
-    return biggest
+    ...
 
 
 

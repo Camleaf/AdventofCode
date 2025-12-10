@@ -27,7 +27,7 @@ class Path:
         return f"{self.dist} | from: {self.junkFrom} to: {self.junkTo}\n"
 
 def part1():
-    with open('main.in','r') as file:
+    with open('2025/inputs/08.txt','r') as file:
         raw = file.read().splitlines()
     
 
@@ -117,7 +117,7 @@ def part2():
     # to solve this, check when circuit[0] == junctions to find last el
     #
 
-    with open('main.in','r') as file:
+    with open('2025/inputs/08.txt','r') as file:
         raw = file.read().splitlines()
     
 
