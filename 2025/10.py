@@ -19,7 +19,7 @@ def part1():
             self.currentIndicators = currentIndicators
             self.count = count
     
-    with open('main.in','r') as file:
+    with open('2025/inputs/10.txt','r') as file:
         raw = file.read().splitlines()
 
     machines:list[Machine] = []
@@ -71,11 +71,11 @@ def part1():
 
 def part2():
 
-    with open('main.in','r') as file:
+    with open('2025/inputs/10.txt','r') as file:
         raw = file.read().splitlines()
 
     
-    ...
+    return "unfinished"
 
 
 
