@@ -28,9 +28,7 @@ class Path:
 
 def part1():
     with open('2025/inputs/08.txt','r') as file:
-        raw = file.read().splitlines()
-    
-
+        raw = file.read().splitlines()  
     junctions = []
     paths:list[Path] = []
     for i,line in enumerate(raw):
@@ -106,9 +104,6 @@ def part1():
     return total
 
 
-
-
-    
 
     
 
